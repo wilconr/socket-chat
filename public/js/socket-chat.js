@@ -17,10 +17,16 @@ var usuario = {
 };
 
 socket.on('connect', function() {
+
     console.log('Conectado al servidor');
+
     socket.emit('entrarChat', usuario, function(resp) {
+        // console.log(usuario);
         console.log('Usuarios conectados', resp);
+        renderizarUsuarios(resp);
+        renderizarTituloGrupoChat(usuario);
     });
+
 });
 
 // escuchar
@@ -33,6 +39,7 @@ socket.on('disconnect', function() {
 
 // Enviar información a todos los usuarios
 // socket.emit('enviarMensaje', {
+//     nombre: 'Wilmer',   
 //     mensaje: 'Hola Mundo'
 // }, function(resp) {
 //     console.log('respuesta server: ', resp);
@@ -41,7 +48,9 @@ socket.on('disconnect', function() {
 // Escuchar información 
 socket.on('enviarMensaje', function(mensaje) {
 
-    console.log('Servidor:', mensaje);
+    // console.log('Servidor:', mensaje);
+    renderizarMensajes(mensaje, false);
+    scrollBottom();
 
 });
 
@@ -49,6 +58,7 @@ socket.on('enviarMensaje', function(mensaje) {
 socket.on('listaPersona', function(personas) {
 
     console.log(personas);
+    renderizarUsuarios(personas);
 
 });
 

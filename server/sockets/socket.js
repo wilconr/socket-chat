@@ -22,16 +22,18 @@ io.on('connection', (client) => {
 
         client.broadcast.to(data.grupo).emit('listaPersona', usuarios.getPersonasPorGrupo(data.grupo));
 
+        client.broadcast.to(data.grupo).emit('enviarMensaje', crearMensaje('Administrador', `${data.nombre} Ingreso a el chat`));
+
         callback(usuarios.getPersonasPorGrupo(data.grupo));
 
     });
 
-    client.on('enviarMensaje', (data) => {
+    client.on('enviarMensaje', (data, callback) => {
 
         let persona = usuarios.getPersona(client.id);
         let mensaje = crearMensaje(persona.nombre, data.mensaje);
         client.broadcast.to(persona.grupo).emit('enviarMensaje', mensaje);
-
+        callback(mensaje);
     });
 
     client.on('disconnect', () => {
@@ -40,7 +42,7 @@ io.on('connection', (client) => {
 
         client.broadcast.to(personaBorrada.grupo).emit('enviarMensaje', crearMensaje('Administrador', `${personaBorrada.nombre} abandonó el chat`));
 
-        client.broadcast.to(personaBorrada.grupo).emit('listaPersonas', usuarios.getPersonasPorGrupo(personaBorrada.grupo));
+        client.broadcast.to(personaBorrada.grupo).emit('listaPersona', usuarios.getPersonasPorGrupo(personaBorrada.grupo));
 
     });
 
